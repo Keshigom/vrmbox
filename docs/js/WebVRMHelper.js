@@ -137,12 +137,12 @@ class WebVRM {
     }
 
     setScale(value) {
-        this._vrm.scene.scale.set(value, value, value);
+        this._vrm.model.scale.set(value, value, value);
     }
 
     update() {
         const delta = this.clock.getDelta();
-        this.physics.update(delta);
+        //  this.physics.update(delta);
         //renderer.render(scene, camera);
     }
 

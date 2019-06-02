@@ -53,6 +53,15 @@ var VAUTA = VAUTA || {};
         light.position.set(0, 1, -1);
         scene.add(light);
 
+
+        var size = 5;
+        var step = 20;
+        const material = new THREE.MeshBasicMaterial({ color: 0x6699FF });
+
+        VAUTA.gridHelper = new THREE.GridHelper(size, step);
+        // gridHelper.material = material;
+        scene.add(VAUTA.gridHelper);
+
         initRenderer(canvas);
         console.log("scene Ready")
     }
@@ -255,14 +264,29 @@ var VAUTA = VAUTA || {};
         if (JEEFACETRANSFERAPI.is_detected()) {
 
             //頭の向きの追従
-            applyHeadRotation(faceRotaion);
+            // applyHeadRotation(faceRotaion);
 
             //表情
             convertExpression(faceExpression);
             applyThreshold();
             applyExpression();
+
+            // 立体視
+            disp3D();
         }
 
+    };
+
+    const disp3D = () => {
+        const positionScale = JEEFACETRANSFERAPI.get_positionScale();
+        const modelRoteateY = -(positionScale[0] - 0.5) * 20 * Math.PI / 180;
+        const modelRoteateX = -(positionScale[1] - 0.5) * 20 * Math.PI / 180;
+        VAUTA.avatar.setBoneRotation("hips", {
+            x: modelRoteateX,
+            y: modelRoteateY
+        });
+        VAUTA.gridHelper.rotation.x = modelRoteateX;
+        VAUTA.gridHelper.rotation.y = modelRoteateY;
     };
 
     const applyHeadRotation = function (rotaions) {
